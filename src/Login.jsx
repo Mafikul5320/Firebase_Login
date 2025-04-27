@@ -22,7 +22,7 @@ const Login = () => {
         signInWithPopup(auth, GitHubProvider).then(res => console.log(res)).catch(res => console.log(res))
     }
     return (
-        <div>
+        <div className="">
             {
                 User ? <span className='flex items-center'> <button onClick={HandelREmove} className='btn btn-active'> <FaSignOutAlt size={22} /> Sing Out</button></span> : <>
                     <span className='flex items-center'> <button onClick={HandelLogin} className='btn btn-active'> <FcGoogle size={22} /> Login With Google</button></span>
