@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router';
 
 const Navber = () => {
     return (
@@ -40,7 +41,8 @@ const Navber = () => {
                 </ul>
             </div>
             <div className="navbar-end">
-                <a className="btn">Button</a>
+                <Link to={"/login"}><button className='btn btn-info'>Login</button></Link>
+                <Link to={"/"}><button className='ml-3 btn btn-error'>Register</button></Link>
             </div>
         </div>
     );

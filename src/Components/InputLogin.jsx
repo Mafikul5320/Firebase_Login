@@ -1,4 +1,4 @@
-import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { createUserWithEmailAndPassword, sendEmailVerification, updateProfile } from 'firebase/auth';
 import React, { useState } from 'react';
 import { auth } from '../UserLogin';
 import { FaEye, FaEyeSlash } from 'react-icons/fa6';
@@ -13,9 +13,11 @@ const InputLogin = () => {
         const Email = event.target.email.value
         const Password = event.target.password.value;
         const Chack = event.target.terms.checked;
-        console.log(Chack)
-        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-        if(!Chack){
+        const Name = event.target.name.value;
+        const Url = event.target.photo.value;
+        // console.log(Name, Url)
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])/;
+        if (!Chack) {
             setError("Please Click the chack box")
             return;
         }
@@ -23,13 +25,24 @@ const InputLogin = () => {
             setError("Your Password is Not strong...");
             return;
         }
-        
+
         setError("")
         setSuccesfull(false)
         createUserWithEmailAndPassword(auth, Email, Password).then(res => {
             console.log(res)
-            setSuccesfull(true)
+            sendEmailVerification(auth.currentUser).then(() => {
+                setSuccesfull(true)
+                alert("Email send Successfully")
+                const ProfileUpdate = {
+                    displayName: Name,
+                    photoURL: Url,
+        
+                };
+                console.log(ProfileUpdate)
+                updateProfile(auth.currentUser, ProfileUpdate).then(() => { console.log("User Profile Update")}).catch(res => console.log(res))
+            }).catch()
         }).catch(error => setError(error.message))
+        
     }
     return (
         <div className="hero ">
@@ -38,6 +51,10 @@ const InputLogin = () => {
                     <div className="card-body">
                         <form onSubmit={HandelSubmit}>
                             <fieldset className="fieldset">
+                                <label className="label">Name</label>
+                                <input name="name" type="text" className="input" placeholder="Enter Name" />
+                                <label className="label">Photo Url</label>
+                                <input name="photo" type="text" className="input" placeholder="Enter Photo Url" />
                                 <label className="label">Email</label>
                                 <input name="email" type="email" className="input" placeholder="Email" />
                                 <label className="label">Password</label>
@@ -47,7 +64,7 @@ const InputLogin = () => {
                                         setShowpass(!Showpass)
                                     }} className='absolute top-3 right-3'>{Showpass ? <FaEye ></FaEye> : <FaEyeSlash></FaEyeSlash>}</button>
                                 </div>
-                                <div><a className="link link-hover">Forgot password?</a></div>
+
                                 <label className="label">
                                     <input type="checkbox" name='terms' className="checkbox" />
                                     Remember me
